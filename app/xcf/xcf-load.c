@@ -158,6 +158,7 @@ xcf_load_image (Gimp     *gimp,
   gint                image_type;
   GimpPrecision       precision = GIMP_PRECISION_U8_GAMMA;
   gint                num_successful_elements = 0;
+  GList              *syms;
   GList              *iter;
 
   /* read in the image width, height and type */
@@ -272,7 +273,8 @@ xcf_load_image (Gimp     *gimp,
     }
 
   /* check for symmetry parasites */
-  for (iter = gimp_image_symmetry_list (); iter; iter = g_list_next (iter))
+  syms = gimp_image_symmetry_list ();
+  for (iter = syms; iter; iter = g_list_next (iter))
     {
       GType  type = (GType) iter->data;
       gchar *parasite_name = gimp_symmetry_parasite_name (type);
@@ -301,7 +303,7 @@ xcf_load_image (Gimp     *gimp,
             }
         }
     }
-
+  g_list_free (syms);
 
   /* migrate the old "exif-data" parasite */
   parasite = gimp_image_parasite_find (GIMP_IMAGE (image),
